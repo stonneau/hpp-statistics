@@ -36,6 +36,7 @@ IF (HPP_DEBUG)
 ENDIF()
 
 SET (${PROJECT_NAME}_HEADERS
+  include/hpp/statistics/bin.hh
   )
 
 # Add dependency toward hpp-model library in pkg-config file.
