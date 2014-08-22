@@ -14,13 +14,29 @@
 // received a copy of the GNU Lesser General Public License along with
 // hpp-statistics. If not, see <http://www.gnu.org/licenses/>.
 
+#include <limits.h>
+
 #include "hpp/statistics/success-bin.hh"
 
 namespace hpp {
   namespace statistics {
-    SuccessBin::SuccessBin (const bool success) :
-      success_ (success), freq_ (0)
-    {}
+    unsigned int reasonID_last = 0;
+    SuccessBin::Reason SuccessBin::REASON_SUCCESS = SuccessBin::createReason ("Success");
+    SuccessBin::Reason SuccessBin::REASON_UNKNOWN = SuccessBin::createReason ("Unknown");
+
+    DEFINE_REASON_FAILURE (REASON_MAX_ITERATION, "Max iteration reached");
+
+    SuccessBin::Reason SuccessBin::createReason (const std::string& what)
+    {
+      return Reason (reasonID_last++, what);
+    }
+
+    SuccessBin::SuccessBin (const bool success, Reason r) :
+      success_ (success), freq_ (0), reason_(r)
+    {
+      if (success_)
+        r = REASON_SUCCESS;
+    }
 
     bool SuccessBin::isSuccess () const
     {
@@ -48,6 +64,52 @@ namespace hpp {
       if (success_) os << "'Success'";
       else          os << "'Failure'";
       return os;
+    }
+
+    const SuccessBin::Reason& SuccessBin::reason () const
+    {
+      return reason_;
+    }
+
+    bool SuccessBin::operator == (const SuccessBin& other) const
+    {
+      return reason_.id == other.reason().id;
+    }
+
+    bool SuccessBin::operator < (const SuccessBin& other) const
+    {
+      return reason_.id < other.reason ().id;
+    }
+
+    void SuccessStatistics::addFailure (const SuccessBin::Reason& r)
+    {
+      SuccessBin b (false, r);
+      std::set<SuccessBin>::iterator it = bins.find (b);
+      if (it == bins.end())
+        bins.insert (b);
+      ((SuccessBin)(*it))++;
+    }
+
+    void SuccessStatistics::addSuccess ()
+    {
+      SuccessBin b (true);
+      std::set<SuccessBin>::iterator it = bins.find (b);
+      if (it == bins.end())
+        bins.insert (b);
+      ((SuccessBin)(*it))++;
+    }
+
+    std::ostream& SuccessStatistics::print (std::ostream& os) const
+    {
+      std::set <SuccessBin>::const_iterator it;
+      for (it = bins.begin(); it != bins.end(); it++)
+        os << (*it);
+      return os;
+    }
+
+    static std::ostream& operator<< (std::ostream& os, const SuccessStatistics& ss)
+    {
+      return ss.print (os);
     }
   } // namespace statistics
 } // namespace hpp

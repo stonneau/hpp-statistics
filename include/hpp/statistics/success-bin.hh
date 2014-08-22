@@ -15,26 +15,45 @@
 // hpp-statistics. If not, see <http://www.gnu.org/licenses/>.
 
 
-#ifndef HPP_MANIPULATION_GRAPH_STATISTICS_HH
-# define HPP_MANIPULATION_GRAPH_STATISTICS_HH
+#ifndef HPP_STATISTICS_SUCCESSBIN_HH
+# define HPP_STATISTICS_SUCCESSBIN_HH
 
-# include <ostream>
+# include <iostream>
+# include <set>
 
-# include <hpp/statistics/config.hh>
+# include "hpp/statistics/config.hh"
 # include "hpp/statistics/bin.hh"
+
+# define DEFINE_REASON_FAILURE(ID, STRING) \
+  ::hpp::statistics::SuccessBin::Reason ID = ::hpp::statistics::SuccessBin::createReason ( STRING ); \
+  struct e_n_d__w_i_t_h__s_e_m_i_c_o_l_o_n
 
 namespace hpp {
   namespace statistics {
+    class SuccessStatistics;
+    static std::ostream& operator<< (std::ostream&, const SuccessStatistics&);
+
     /// This class count the number of success and failure.
     class HPP_STATISTICS_DLLAPI SuccessBin : public Bin
     {
       public:
+        class Reason;
+
+        /// The default reason for 'failure'.
+        static Reason REASON_UNKNOWN;
+
         /// Constructor
-        SuccessBin (const bool success);
+        SuccessBin (const bool success, Reason r = REASON_UNKNOWN);
 
         /// Value of the bin.
         /// \return True is it counts "success", False otherwise.
         bool isSuccess () const;
+
+        /// If this bin represents 'failure', returns the reason.
+        const Reason& reason () const;
+
+        /// If this bin represents 'failure', returns the reason as a string.
+        const std::string& reasonString () const;
 
         /// Add an occurence
         /// \return The frequency after increment;
@@ -47,13 +66,66 @@ namespace hpp {
         /// \return The number of element in the bin.
         size_t freq () const;
 
+        /// Check for equality.
+        /// \return True if both are 'success' or if they are both 'failure'
+        /// with the same Reason.
+        bool operator == (const SuccessBin& other) const;
+
+        /// Comparison
+        /// \return the comparison of their reason id.
+        /// 'success' has a reason id of INT_MIN.
+        bool operator < (const SuccessBin& other) const;
+
+        /// Create a new Reason
+        /// \param what The text associated with the reason.
+        static Reason createReason (const std::string& what);
+
+        /// In case of failure, you can provide a reason.
+        /// Use macro DEFINE_REASON_FAILURE (REASON_NAME, Reason string)
+        ///       to define a new reason.
+        class Reason {
+          public:
+            unsigned int id;
+            std::string what;
+          private:
+            Reason (unsigned int a_id, std::string a_what) :
+              id (a_id), what (a_what) {}
+            friend Reason SuccessBin::createReason (const std::string&);
+        };
+
       private:
         bool success_;
         size_t freq_;
+        Reason reason_;
+
+        /// The reason for 'success'.
+        static Reason REASON_SUCCESS;
+        static unsigned int reasonID_last;
 
         std::ostream& printValue (std::ostream& os) const;
+    };
+
+    class HPP_STATISTICS_DLLAPI SuccessStatistics
+    {
+      public:
+        /// Add a 'success'
+        void addSuccess ();
+
+        /// Add a 'failure'
+        /// \param r the reason of the 'failure'
+        /// \note Use macro DEFINE_REASON_FAILURE (REASON_NAME, 'Reason details')
+        ///       to define a new reason.
+        void addFailure (const SuccessBin::Reason& r = SuccessBin::REASON_UNKNOWN);
+
+      private:
+        std::set <SuccessBin> bins;
+
+        /// Put the results in a stream.
+        std::ostream& print (std::ostream& os) const;
+
+        friend std::ostream& operator<< (std::ostream&, const SuccessStatistics&);
     };
   } // namespace statistics
 } // namespace hpp
 
-#endif // HPP_MANIPULATION_GRAPH_STATISTICS_HH
+#endif // HPP_STATISTICS_SUCCESSBIN_HH
