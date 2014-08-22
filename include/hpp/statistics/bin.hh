@@ -24,6 +24,9 @@
 
 namespace hpp {
   namespace statistics {
+    class Bin;
+    static std::ostream& operator<< (std::ostream& os, const Bin& b);
+
     /// Abstract class representing a bin.
     ///
     /// Bins are use for statistics. They keep the number of
@@ -40,8 +43,6 @@ namespace hpp {
 
         friend std::ostream& operator<< (std::ostream&, const Bin&);
     };
-
-    std::ostream& operator<< (std::ostream& os, const Bin& b);
   } // namespace statistics
 } // namespace hpp
 
