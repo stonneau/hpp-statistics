@@ -37,6 +37,7 @@ ENDIF()
 
 SET (${PROJECT_NAME}_HEADERS
   include/hpp/statistics/bin.hh
+  include/hpp/statistics/success-bin.hh
   )
 
 # Add dependency toward hpp-model library in pkg-config file.
