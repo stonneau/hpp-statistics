@@ -20,22 +20,20 @@
 
 namespace hpp {
   namespace statistics {
-    unsigned int reasonID_last = 0;
-    SuccessBin::Reason SuccessBin::REASON_SUCCESS = SuccessBin::createReason ("Success");
-    SuccessBin::Reason SuccessBin::REASON_UNKNOWN = SuccessBin::createReason ("Unknown");
-
-    DEFINE_REASON_FAILURE (REASON_MAX_ITERATION, "Max iteration reached");
+    unsigned int SuccessBin::reasonID_last = 0;
+    const SuccessBin::Reason SuccessBin::REASON_SUCCESS = SuccessBin::createReason ("Success");
+    const SuccessBin::Reason SuccessBin::REASON_UNKNOWN = SuccessBin::createReason ("Unknown");
 
     SuccessBin::Reason SuccessBin::createReason (const std::string& what)
     {
       return Reason (reasonID_last++, what);
     }
 
-    SuccessBin::SuccessBin (const bool success, Reason r) :
+    SuccessBin::SuccessBin (const bool success, const Reason& r) :
       success_ (success), freq_ (0), reason_(r)
     {
       if (success_)
-        r = REASON_SUCCESS;
+        reason_ = REASON_SUCCESS;
     }
 
     bool SuccessBin::isSuccess () const
@@ -62,7 +60,7 @@ namespace hpp {
     {
       os << "Event ";
       if (success_) os << "'Success'";
-      else          os << "'Failure'";
+      else          os << "'Failure': " << reason_.what;
       return os;
     }
 
@@ -81,33 +79,65 @@ namespace hpp {
       return reason_.id < other.reason ().id;
     }
 
+    SuccessStatistics::SuccessStatistics () : bins_(), counts_(0)
+    {}
+
     void SuccessStatistics::addFailure (const SuccessBin::Reason& r)
     {
-      SuccessBin b (false, r);
-      std::set<SuccessBin>::iterator it = bins.find (b);
-      if (it == bins.end())
-        bins.insert (b);
-      ((SuccessBin)(*it))++;
+      SuccessBin b = SuccessBin (false, r);
+      increment (b);
     }
 
     void SuccessStatistics::addSuccess ()
     {
-      SuccessBin b (true);
-      std::set<SuccessBin>::iterator it = bins.find (b);
-      if (it == bins.end())
-        bins.insert (b);
-      ((SuccessBin)(*it))++;
+      SuccessBin b = SuccessBin (true);
+      increment (b);
+    }
+
+    void SuccessStatistics::increment (SuccessBin& b)
+    {
+      b++;
+      std::pair<std::set<SuccessBin>::iterator, bool> it = bins_.insert (b);
+      if (!it.second) {
+        // The bin exists already. We must copy and reinsert it.
+        SuccessBin bin = *(it.first);
+        bin ++;
+        bins_.erase (b);
+        bins_.insert (bin);
+      }
+      counts_++;
+    }
+
+    unsigned int SuccessStatistics::nbSuccess () const
+    {
+      std::set<SuccessBin>::iterator it = bins_.find (SuccessBin(true));
+      if (it != bins_.end())
+        return it->freq();
+      return 0;
+    }
+
+    unsigned int SuccessStatistics::nbFailure () const
+    {
+      return counts_ - nbSuccess();
+    }
+
+    unsigned int SuccessStatistics::nbFailure (const SuccessBin::Reason& r) const
+    {
+      std::set<SuccessBin>::iterator it = bins_.find (SuccessBin(false, r));
+      if (it != bins_.end())
+        return it->freq();
+      return 0;
     }
 
     std::ostream& SuccessStatistics::print (std::ostream& os) const
     {
       std::set <SuccessBin>::const_iterator it;
-      for (it = bins.begin(); it != bins.end(); it++)
+      for (it = bins_.begin(); it != bins_.end(); it++)
         os << (*it);
       return os;
     }
 
-    static std::ostream& operator<< (std::ostream& os, const SuccessStatistics& ss)
+    std::ostream& operator<< (std::ostream& os, const SuccessStatistics& ss)
     {
       return ss.print (os);
     }

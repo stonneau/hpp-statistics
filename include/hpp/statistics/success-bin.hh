@@ -24,14 +24,15 @@
 # include "hpp/statistics/config.hh"
 # include "hpp/statistics/bin.hh"
 
-# define DEFINE_REASON_FAILURE(ID, STRING) \
-  ::hpp::statistics::SuccessBin::Reason ID = ::hpp::statistics::SuccessBin::createReason ( STRING ); \
+# define HPP_DEFINE_REASON_FAILURE(ID, STRING) \
+  const ::hpp::statistics::SuccessBin::Reason ID = \
+    ::hpp::statistics::SuccessBin::createReason ( STRING ); \
   struct e_n_d__w_i_t_h__s_e_m_i_c_o_l_o_n
 
 namespace hpp {
   namespace statistics {
     class SuccessStatistics;
-    static std::ostream& operator<< (std::ostream&, const SuccessStatistics&);
+    std::ostream& operator<< (std::ostream&, const SuccessStatistics&);
 
     /// This class count the number of success and failure.
     class HPP_STATISTICS_DLLAPI SuccessBin : public Bin
@@ -40,10 +41,10 @@ namespace hpp {
         class Reason;
 
         /// The default reason for 'failure'.
-        static Reason REASON_UNKNOWN;
+        const static Reason REASON_UNKNOWN;
 
         /// Constructor
-        SuccessBin (const bool success, Reason r = REASON_UNKNOWN);
+        SuccessBin (const bool success, const Reason& r = REASON_UNKNOWN);
 
         /// Value of the bin.
         /// \return True is it counts "success", False otherwise.
@@ -99,7 +100,7 @@ namespace hpp {
         Reason reason_;
 
         /// The reason for 'success'.
-        static Reason REASON_SUCCESS;
+        const static Reason REASON_SUCCESS;
         static unsigned int reasonID_last;
 
         std::ostream& printValue (std::ostream& os) const;
@@ -108,6 +109,9 @@ namespace hpp {
     class HPP_STATISTICS_DLLAPI SuccessStatistics
     {
       public:
+        /// Constructor
+        SuccessStatistics ();
+
         /// Add a 'success'
         void addSuccess ();
 
@@ -117,8 +121,22 @@ namespace hpp {
         ///       to define a new reason.
         void addFailure (const SuccessBin::Reason& r = SuccessBin::REASON_UNKNOWN);
 
+        /// Count the number of success.
+        unsigned int nbSuccess () const;
+
+        /// Count the number of failure, in total.
+        unsigned int nbFailure () const;
+
+        /// Count the number of a particular failure.
+        unsigned int nbFailure (const SuccessBin::Reason& r) const;
+
       private:
-        std::set <SuccessBin> bins;
+        std::set <SuccessBin> bins_;
+
+        unsigned int counts_;
+
+        /// Increment the bin.
+        void increment (SuccessBin& b);
 
         /// Put the results in a stream.
         std::ostream& print (std::ostream& os) const;

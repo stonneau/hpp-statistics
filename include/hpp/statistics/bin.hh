@@ -25,7 +25,7 @@
 namespace hpp {
   namespace statistics {
     class Bin;
-    static std::ostream& operator<< (std::ostream& os, const Bin& b);
+    std::ostream& operator<< (std::ostream& os, const Bin& b);
 
     /// Abstract class representing a bin.
     ///
