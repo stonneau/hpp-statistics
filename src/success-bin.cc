@@ -30,7 +30,7 @@ namespace hpp {
     }
 
     SuccessBin::SuccessBin (const bool success, const Reason& r) :
-      success_ (success), freq_ (0), reason_(r)
+      Bin(), success_ (success), reason_(r)
     {
       if (success_)
         reason_ = REASON_SUCCESS;
@@ -39,21 +39,6 @@ namespace hpp {
     bool SuccessBin::isSuccess () const
     {
       return success_;
-    }
-
-    size_t SuccessBin::freq () const
-    {
-      return freq_;
-    }
-
-    size_t SuccessBin::operator ++()
-    {
-      return ++freq_;
-    }
-
-    size_t SuccessBin::operator ++(int)
-    {
-      return freq_++;
     }
 
     std::ostream& SuccessBin::printValue (std::ostream& os) const
@@ -79,7 +64,7 @@ namespace hpp {
       return reason_.id < other.reason ().id;
     }
 
-    SuccessStatistics::SuccessStatistics () : bins_(), counts_(0)
+    SuccessStatistics::SuccessStatistics ()
     {}
 
     void SuccessStatistics::addFailure (const SuccessBin::Reason& r)
@@ -94,52 +79,19 @@ namespace hpp {
       increment (b);
     }
 
-    void SuccessStatistics::increment (SuccessBin& b)
-    {
-      b++;
-      std::pair<std::set<SuccessBin>::iterator, bool> it = bins_.insert (b);
-      if (!it.second) {
-        // The bin exists already. We must copy and reinsert it.
-        SuccessBin bin = *(it.first);
-        bin ++;
-        bins_.erase (b);
-        bins_.insert (bin);
-      }
-      counts_++;
-    }
-
     unsigned int SuccessStatistics::nbSuccess () const
     {
-      std::set<SuccessBin>::iterator it = bins_.find (SuccessBin(true));
-      if (it != bins_.end())
-        return it->freq();
-      return 0;
+      return freq (SuccessBin(true));
     }
 
     unsigned int SuccessStatistics::nbFailure () const
     {
-      return counts_ - nbSuccess();
+      return numberOfOccurence() - nbSuccess();
     }
 
     unsigned int SuccessStatistics::nbFailure (const SuccessBin::Reason& r) const
     {
-      std::set<SuccessBin>::iterator it = bins_.find (SuccessBin(false, r));
-      if (it != bins_.end())
-        return it->freq();
-      return 0;
-    }
-
-    std::ostream& SuccessStatistics::print (std::ostream& os) const
-    {
-      std::set <SuccessBin>::const_iterator it;
-      for (it = bins_.begin(); it != bins_.end(); it++)
-        os << (*it);
-      return os;
-    }
-
-    std::ostream& operator<< (std::ostream& os, const SuccessStatistics& ss)
-    {
-      return ss.print (os);
+      return freq (SuccessBin (false, r));
     }
   } // namespace statistics
 } // namespace hpp

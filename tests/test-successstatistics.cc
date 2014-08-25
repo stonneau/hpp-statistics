@@ -49,7 +49,7 @@ int main ()
   if (   ss.nbSuccess () != counter[0]
       || ss.nbFailure (SuccessBin::REASON_UNKNOWN) != counter[1]
       || ss.nbFailure (REASON_TEST) != counter[2]) {
-    std::cout << ss;
+    std::cout << ss << std::endl;
     std::cout << "Real frequencies are: ( " << counter[0] << ", " << counter[1]
       << ", " << counter [2] << ")" << std::endl;
     return EXIT_FAILURE;

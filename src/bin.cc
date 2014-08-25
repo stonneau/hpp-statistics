@@ -18,9 +18,13 @@
 
 namespace hpp {
   namespace statistics {
-    std::ostream& operator<< (std::ostream& os, const Bin& b)
+    std::ostream& Bin::print (std::ostream& os) const
     {
-      return b.printValue (os) << " seen " << b.freq() << " time(s)." << std::endl;
+      return printValue (os) << " seen " << freq() << " time(s).";
     }
   } // namespace statistics
 } // namespace hpp
+std::ostream& operator<< (std::ostream& os, const hpp::statistics::Bin& b)
+{
+  return b.print (os);
+}

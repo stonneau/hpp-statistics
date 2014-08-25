@@ -31,9 +31,6 @@
 
 namespace hpp {
   namespace statistics {
-    class SuccessStatistics;
-    std::ostream& operator<< (std::ostream&, const SuccessStatistics&);
-
     /// This class count the number of success and failure.
     class HPP_STATISTICS_DLLAPI SuccessBin : public Bin
     {
@@ -55,17 +52,6 @@ namespace hpp {
 
         /// If this bin represents 'failure', returns the reason as a string.
         const std::string& reasonString () const;
-
-        /// Add an occurence
-        /// \return The frequency after increment;
-        size_t operator ++();
-
-        /// Add an occurence
-        /// \return The frequency before increment;
-        size_t operator ++(int);
-
-        /// \return The number of element in the bin.
-        size_t freq () const;
 
         /// Check for equality.
         /// \return True if both are 'success' or if they are both 'failure'
@@ -106,9 +92,12 @@ namespace hpp {
         std::ostream& printValue (std::ostream& os) const;
     };
 
-    class HPP_STATISTICS_DLLAPI SuccessStatistics
+    class HPP_STATISTICS_DLLAPI SuccessStatistics :
+      public Statistics < SuccessBin >
     {
       public:
+        typedef Statistics <SuccessBin> Parent;
+
         /// Constructor
         SuccessStatistics ();
 
@@ -129,21 +118,13 @@ namespace hpp {
 
         /// Count the number of a particular failure.
         unsigned int nbFailure (const SuccessBin::Reason& r) const;
-
-      private:
-        std::set <SuccessBin> bins_;
-
-        unsigned int counts_;
-
-        /// Increment the bin.
-        void increment (SuccessBin& b);
-
-        /// Put the results in a stream.
-        std::ostream& print (std::ostream& os) const;
-
-        friend std::ostream& operator<< (std::ostream&, const SuccessStatistics&);
     };
   } // namespace statistics
 } // namespace hpp
+
+std::ostream& operator<< (std::ostream& os, const hpp::statistics::SuccessStatistics& ss)
+{
+  return ss.print (os);
+}
 
 #endif // HPP_STATISTICS_SUCCESSBIN_HH
