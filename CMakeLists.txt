@@ -40,6 +40,7 @@ SET (${PROJECT_NAME}_HEADERS
   include/hpp/statistics/bin.hh
   include/hpp/statistics/success-bin.hh
   include/hpp/statistics/operators.hh
+  include/hpp/statistics/distribution.hh
   )
 
 # Add dependency toward hpp-model library in pkg-config file.
