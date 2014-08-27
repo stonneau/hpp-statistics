@@ -17,6 +17,7 @@
 #include <limits.h>
 
 #include "hpp/statistics/success-bin.hh"
+#include "hpp/statistics/operators.hh"
 
 namespace hpp {
   namespace statistics {
@@ -86,7 +87,7 @@ namespace hpp {
 
     unsigned int SuccessStatistics::nbFailure () const
     {
-      return numberOfOccurence() - nbSuccess();
+      return numberOfObservations() - nbSuccess();
     }
 
     unsigned int SuccessStatistics::nbFailure (const SuccessBin::Reason& r) const

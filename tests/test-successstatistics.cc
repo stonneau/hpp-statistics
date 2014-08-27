@@ -19,8 +19,11 @@
 #include <iostream>
 
 #include "hpp/statistics/success-bin.hh"
+#include "hpp/statistics/operators.hh"
 
 HPP_DEFINE_REASON_FAILURE (REASON_TEST, "Fake reason for testing purpose");
+
+using namespace hpp;
 
 int main ()
 {

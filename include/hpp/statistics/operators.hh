@@ -14,14 +14,24 @@
 // received a copy of the GNU Lesser General Public License along with
 // hpp-statistics. If not, see <http://www.gnu.org/licenses/>.
 
-#include "hpp/statistics/bin.hh"
-#include "hpp/statistics/operators.hh"
+#ifndef HPP_STATISTICS_OPERATORS_HH
+# define HPP_STATISTICS_OPERATORS_HH
+
+# include <iosfwd>
+
+# include "hpp/statistics/bin.hh"
+# include "hpp/statistics/success-bin.hh"
+# include "hpp/statistics/config.hh"
 
 namespace hpp {
-  namespace statistics {
-    std::ostream& Bin::print (std::ostream& os) const
-    {
-      return printValue (os) << " seen " << freq() << " time(s).";
-    }
-  } // namespace statistics
+  HPP_STATISTICS_DLLAPI std::ostream&
+    operator<< (std::ostream& os, const hpp::statistics::Bin& b);
+  HPP_STATISTICS_DLLAPI std::ostream&
+    operator<< (std::ostream& os, const hpp::statistics::SuccessBin& b);
+  template < typename T > HPP_STATISTICS_DLLAPI std::ostream&
+    operator<< (std::ostream& os, const hpp::statistics::Statistics <T>& ss);
+  HPP_STATISTICS_DLLAPI std::ostream&
+    operator<< (std::ostream& os, const hpp::statistics::SuccessStatistics& ss);
 } // namespace hpp
+
+#endif // HPP_STATISTICS_OPERATORS_HH

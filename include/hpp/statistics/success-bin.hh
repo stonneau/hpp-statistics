@@ -23,6 +23,7 @@
 
 # include "hpp/statistics/config.hh"
 # include "hpp/statistics/bin.hh"
+# include "hpp/statistics/fwd.hh"
 
 # define HPP_DEFINE_REASON_FAILURE(ID, STRING) \
   const ::hpp::statistics::SuccessBin::Reason ID = \
@@ -121,10 +122,5 @@ namespace hpp {
     };
   } // namespace statistics
 } // namespace hpp
-
-std::ostream& operator<< (std::ostream& os, const hpp::statistics::SuccessStatistics& ss)
-{
-  return ss.print (os);
-}
 
 #endif // HPP_STATISTICS_SUCCESSBIN_HH

@@ -21,19 +21,8 @@
 # include <ostream>
 # include <set>
 
-# include <hpp/statistics/config.hh>
-
-namespace hpp {
-  namespace statistics {
-    class Bin;
-    template < typename T >
-      class Statistics;
-  } // namespace statistics
-} // namespace hpp
-
-std::ostream& operator<< (std::ostream&, const hpp::statistics::Bin&);
-template < typename T >
-std::ostream& operator<< (std::ostream&, const hpp::statistics::Statistics <T>&);
+# include "hpp/statistics/config.hh"
+# include "hpp/statistics/fwd.hh"
 
 namespace hpp {
   namespace statistics {
@@ -94,8 +83,9 @@ namespace hpp {
         /// Return the number of occurence of a Bin
         virtual size_t freq (const T& bin) const;
 
-        /// Return the total number of occurence.
-        unsigned int numberOfOccurence () const
+        /// Return the number of times a observation has recorded. It is the
+        /// total number of observations.
+        unsigned int numberOfObservations () const
         {
           return counts_;
         }
@@ -171,17 +161,12 @@ namespace hpp {
     std::ostream& Statistics<T>::print (std::ostream& os) const
     {
       const_iterator it;
-      for (it = begin(); it != end(); it++)
-        os << (*it) << std::endl;
+      for (it = begin(); it != end(); it++) {
+        it->print (os) << std::endl;
+      }
       return os;
     }
   } // namespace statistics
 } // namespace hpp
-
-  template < typename T >
-std::ostream& operator<< (std::ostream& os, const hpp::statistics::Statistics <T>& ss)
-{
-  return ss.print (os);
-}
 
 #endif // HPP_STATISTICS_HH
