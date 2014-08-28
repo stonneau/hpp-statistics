@@ -18,6 +18,7 @@
 # define HPP_STATISTICS_DISTRIBUTION_HH
 
 # include <vector>
+# include <assert.h>
 # include <stdlib.h>
 
 namespace hpp {
@@ -100,8 +101,9 @@ namespace hpp {
           /// \}
         private:
           size_t dichotomy (const Weight_t& r) const {
+            if (r < cumulative_weights_[0]) return 0;
             size_t l = 0, h = values_.size () - 1, m;
-            while (l != h) {
+            while (l < h - 1) {
               m = (l + h) / 2;
               if (cumulative_weights_[m] < r)
                 l = m;
@@ -110,7 +112,7 @@ namespace hpp {
               else
                 return m;
             }
-            return l;
+            return h;
           }
 
           std::vector < ProbaTPair > values_;
