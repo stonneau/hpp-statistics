@@ -28,10 +28,11 @@ int main ()
   std::cout.precision(15);
 
   using namespace hpp::statistics;
-  typedef DiscreteDistribution <double> Distrib;
+  typedef int Value;
+  typedef DiscreteDistribution <Value> Distrib;
   Distrib dd;
   const int nbValues = 4;
-  const double values[] = {1.0, 3.0, 2.0, 4.5};
+  const Value values[] = {1, 3, 2, 4};
   const Distrib::Weight_t weight[] =
     {1, 23, 99, 6};
   Distrib::Weight_t total_weight = 0;
@@ -52,5 +53,22 @@ int main ()
         << "Difference = " << p[i] - (double)(weight[i] / (double)total_weight) << std::endl;
       return EXIT_FAILURE;
     }
+
+  if (dd ((Distrib::Weight_t)  0) != values[0]) {
+    std::cout << "dichotomy (" << 0 << ") returns " << dd ((Distrib::Weight_t)  0) << std::endl;
+    return EXIT_FAILURE;
+  }
+  if (dd ((Distrib::Weight_t) 21) != values[1]) {
+    std::cout << "dichotomy (" << 21 << ") returns " << dd ((Distrib::Weight_t)  21) << std::endl;
+    return EXIT_FAILURE;
+  }
+  if (dd ((Distrib::Weight_t) 50) != values[2]) {
+    std::cout << "dichotomy (" << 50 << ") returns " << dd ((Distrib::Weight_t)  50) << std::endl;
+    return EXIT_FAILURE;
+  }
+  if (dd ((Distrib::Weight_t)125) != values[3]) {
+    std::cout << "dichotomy (" << 125 << ") returns " << dd ((Distrib::Weight_t)  125) << std::endl;
+    return EXIT_FAILURE;
+  }
   return EXIT_SUCCESS;
 }
