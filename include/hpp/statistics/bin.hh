@@ -80,8 +80,17 @@ namespace hpp {
         typedef typename std::set <T>::iterator iterator;
         typedef typename std::set <T>::const_iterator const_iterator;
 
-        /// Return the number of occurence of a Bin
+        /// Return the number of occurence of a Bin.
+        /// \param bin a Bin for which only the value is useful.
+        /// \note  It searches for the equivalent Bin is the set and
+        ///        returns the frequency of the result.
         virtual size_t freq (const T& bin) const;
+
+        /// Return the relative frequency of a Bin.
+        /// \param bin a Bin for which only the value is useful.
+        /// \note  It searches for the equivalent Bin is the set and
+        ///        returns the frequency of the result.
+        virtual Proba_t relativeFreq (const T& bin) const;
 
         /// Return the number of times a observation has recorded. It is the
         /// total number of observations.
@@ -154,6 +163,16 @@ namespace hpp {
     }
 
     template < typename T >
+    Proba_t Statistics <T>::relativeFreq (const T& b) const
+    {
+      typename std::set< T >::iterator it = bins_.find (b);
+      if (it == bins_.end ()) {
+        return 0;
+      }
+      return (Proba_t)it->freq () / (Proba_t)numberOfObservations();
+    }
+
+    template < typename T >
       Statistics <T>::Statistics () :bins_ (), counts_(0)
     {}
 
@@ -164,6 +183,7 @@ namespace hpp {
       for (it = begin(); it != end(); it++) {
         it->print (os) << std::endl;
       }
+      os << "Total number of observations: " << numberOfObservations ();
       return os;
     }
   } // namespace statistics

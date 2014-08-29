@@ -42,7 +42,7 @@ int main ()
     total_weight += weight[i];
   }
 
-  std::vector < Distrib::Proba_t > p = dd.probabilities ();
+  std::vector < Proba_t > p = dd.probabilities ();
 
   for (size_t i = 0; i < p.size (); i++)
     if (p[i] - (double)(weight[i] / (double)total_weight) > DBL_EPSILON

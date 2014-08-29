@@ -19,6 +19,8 @@
 
 namespace hpp {
   namespace statistics {
+    typedef double Proba_t;
+
     class Bin;
     template < typename T > class Statistics;
     class SuccessBin;

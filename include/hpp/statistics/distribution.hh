@@ -21,13 +21,14 @@
 # include <assert.h>
 # include <stdlib.h>
 
+# include "hpp/statistics/fwd.hh"
+
 namespace hpp {
   namespace statistics {
     template < typename Value_t >
       class DiscreteDistribution 
       {
         public:
-          typedef double Proba_t;
           typedef unsigned int Weight_t;
           typedef typename std::pair < Weight_t, Value_t> ProbaTPair;
           typedef typename std::vector < ProbaTPair >::iterator iterator;
