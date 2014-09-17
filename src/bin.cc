@@ -15,13 +15,17 @@
 // hpp-statistics. If not, see <http://www.gnu.org/licenses/>.
 
 #include "hpp/statistics/bin.hh"
-#include "hpp/statistics/operators.hh"
 
 namespace hpp {
   namespace statistics {
     std::ostream& Bin::print (std::ostream& os) const
     {
       return printValue (os) << " seen " << freq() << " time(s).";
+    }
+
+    std::ostream& operator<< (std::ostream& os, const hpp::statistics::Bin& b)
+    {
+      return b.print (os);
     }
   } // namespace statistics
 } // namespace hpp

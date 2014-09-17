@@ -17,7 +17,6 @@
 #include <limits.h>
 
 #include "hpp/statistics/success-bin.hh"
-#include "hpp/statistics/operators.hh"
 
 namespace hpp {
   namespace statistics {

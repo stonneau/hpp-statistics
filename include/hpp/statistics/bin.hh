@@ -70,6 +70,8 @@ namespace hpp {
         size_t freq_;
     };
     
+    std::ostream& operator<< (std::ostream& os, const hpp::statistics::Bin& b);
+
     /// Template class to do statistics.
     /// You should derivate class Bin and construct a class
     /// Statistics < YourBin >.
@@ -130,6 +132,9 @@ namespace hpp {
 
         unsigned int counts_;
     };
+
+    template < typename T >
+      std::ostream& operator<< (std::ostream& os, const hpp::statistics::Statistics <T>& ss);
   } // namespace statistics
 } // namespace hpp
 
@@ -186,6 +191,12 @@ namespace hpp {
       os << "Total number of observations: " << numberOfObservations ();
       return os;
     }
+
+    template < typename T >
+      std::ostream& operator<< (std::ostream& os, const hpp::statistics::Statistics <T>& ss)
+      {
+        return ss.print (os);
+      }
   } // namespace statistics
 } // namespace hpp
 
