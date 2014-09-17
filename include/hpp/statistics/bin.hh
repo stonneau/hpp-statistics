@@ -143,7 +143,7 @@ namespace hpp {
 namespace hpp {
   namespace statistics {
     template < typename T >
-    void Statistics <T>::increment (T& b)
+      void Statistics <T>::increment (T& b)
     {
       b++;
       std::pair< iterator, bool > it = bins_.insert (b);
@@ -158,7 +158,7 @@ namespace hpp {
     }
 
     template < typename T >
-    size_t Statistics <T>::freq (const T& b) const
+      size_t Statistics <T>::freq (const T& b) const
     {
       typename std::set< T >::iterator it = bins_.find (b);
       if (it == bins_.end ()) {
@@ -168,7 +168,7 @@ namespace hpp {
     }
 
     template < typename T >
-    Proba_t Statistics <T>::relativeFreq (const T& b) const
+      Proba_t Statistics <T>::relativeFreq (const T& b) const
     {
       typename std::set< T >::iterator it = bins_.find (b);
       if (it == bins_.end ()) {
@@ -182,7 +182,7 @@ namespace hpp {
     {}
 
     template < typename T >
-    std::ostream& Statistics<T>::print (std::ostream& os) const
+      std::ostream& Statistics<T>::print (std::ostream& os) const
     {
       const_iterator it;
       for (it = begin(); it != end(); it++) {

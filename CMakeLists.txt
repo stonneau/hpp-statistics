@@ -39,7 +39,6 @@ SET (${PROJECT_NAME}_HEADERS
   include/hpp/statistics/fwd.hh
   include/hpp/statistics/bin.hh
   include/hpp/statistics/success-bin.hh
-  include/hpp/statistics/operators.hh
   include/hpp/statistics/distribution.hh
   )
 
