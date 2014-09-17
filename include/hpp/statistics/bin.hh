@@ -56,7 +56,7 @@ namespace hpp {
         }
 
         /// Print the bin.
-        std::ostream& print (std::ostream& os) const;
+        virtual std::ostream& print (std::ostream& os) const;
 
         /// Print the inner value of the bin.
         virtual std::ostream& printValue (std::ostream& os) const = 0;
