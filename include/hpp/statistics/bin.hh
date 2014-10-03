@@ -115,6 +115,11 @@ namespace hpp {
         /// already in the set.
         virtual T& increment (const T& bin) __attribute__ ((deprecated));
 
+        /// insert a Bin.
+        /// \note bin is inserted in the set of bins if it was not
+        /// already in the set.
+        virtual iterator insert (const T& bin);
+
         iterator find (const T& bin);
 
         template < typename U > iterator find (const U& value);
@@ -164,6 +169,24 @@ namespace hpp {
       it = bins_.insert (it, b);
       (*it)++;
       return *it;
+    }
+
+    template < typename T >
+      typename Statistics<T>::iterator Statistics <T>::insert (const T& b)
+    {
+      counts_++;
+      iterator it = bins_.begin ();
+      for (; it != bins_.end (); it++) {
+        if (! (*it < b)) {
+          if (! (*it == b))
+            it = bins_.insert (it, b);
+          (*it)++;
+          return it;
+        }
+      }
+      it = bins_.insert (it, b);
+      (*it)++;
+      return it;
     }
 
     template < typename T>
