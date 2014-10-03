@@ -115,6 +115,10 @@ namespace hpp {
         /// already in the set.
         virtual T& increment (const T& bin);
 
+        iterator find (const T& bin);
+
+        template < typename U > iterator find (const U& value);
+
         /// Return an iterator pointing at the beginning of
         /// the set of bins.
         const_iterator begin() const
@@ -160,6 +164,26 @@ namespace hpp {
       it = bins_.insert (it, b);
       (*it)++;
       return *it;
+    }
+
+    template < typename T>
+      typename Statistics<T>::iterator Statistics <T>::find (const T& b)
+    {
+      for (iterator it = bins_.begin ();
+          it != bins_.end (); it++) {
+        if (*it < b)
+          continue;
+        if (*it == b)
+          return it;
+        break;
+      }
+      return bins_.end ();
+    }
+
+    template < typename T> template < typename U >
+      typename Statistics<T>::iterator Statistics <T>::find (const U& v)
+    {
+      return find (T (v));
     }
 
     template < typename T >
