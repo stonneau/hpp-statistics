@@ -106,23 +106,9 @@ namespace hpp {
         /// Put the results in a stream.
         virtual std::ostream& print (std::ostream& os) const;
 
-      protected:
-        /// Constructor
-        Statistics();
+        const_iterator find (const T& bin) const;
 
-        /// Increment a Bin
-        /// \note bin is inserted in the set of bins if it was not
-        /// already in the set.
-        virtual T& increment (const T& bin) __attribute__ ((deprecated));
-
-        /// insert a Bin.
-        /// \note bin is inserted in the set of bins if it was not
-        /// already in the set.
-        virtual iterator insert (const T& bin);
-
-        iterator find (const T& bin);
-
-        template < typename U > iterator find (const U& value);
+        template < typename U > const_iterator find (const U& value) const;
 
         /// Return an iterator pointing at the beginning of
         /// the set of bins.
@@ -137,6 +123,20 @@ namespace hpp {
         {
           return bins_.end();
         }
+
+      protected:
+        /// Constructor
+        Statistics();
+
+        /// Increment a Bin
+        /// \note bin is inserted in the set of bins if it was not
+        /// already in the set.
+        virtual T& increment (const T& bin) __attribute__ ((deprecated));
+
+        /// insert a Bin.
+        /// \note bin is inserted in the set of bins if it was not
+        /// already in the set.
+        virtual iterator insert (const T& bin);
 
       private:
         Container bins_;
@@ -190,9 +190,9 @@ namespace hpp {
     }
 
     template < typename T>
-      typename Statistics<T>::iterator Statistics <T>::find (const T& b)
+      typename Statistics<T>::const_iterator Statistics <T>::find (const T& b) const
     {
-      for (iterator it = bins_.begin ();
+      for (const_iterator it = bins_.begin ();
           it != bins_.end (); it++) {
         if (*it < b)
           continue;
@@ -204,7 +204,7 @@ namespace hpp {
     }
 
     template < typename T> template < typename U >
-      typename Statistics<T>::iterator Statistics <T>::find (const U& v)
+      typename Statistics<T>::const_iterator Statistics <T>::find (const U& v) const
     {
       return find (T (v));
     }
