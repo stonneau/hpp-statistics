@@ -69,14 +69,14 @@ namespace hpp {
 
     void SuccessStatistics::addFailure (const SuccessBin::Reason& r)
     {
-      SuccessBin b = SuccessBin (false, r);
-      increment (b);
+      SuccessStatistics::iterator it = find (SuccessBin (false, r));
+      (*it)++;
     }
 
     void SuccessStatistics::addSuccess ()
     {
-      SuccessBin b = SuccessBin (true);
-      increment (b);
+      SuccessStatistics::iterator it = find (true);
+      (*it)++;
     }
 
     unsigned int SuccessStatistics::nbSuccess () const
