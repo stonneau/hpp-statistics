@@ -19,7 +19,8 @@
 # define HPP_STATISTICS_HH
 
 # include <ostream>
-# include <set>
+# include <list>
+# include <algorithm>
 
 # include "hpp/statistics/config.hh"
 # include "hpp/statistics/fwd.hh"
@@ -79,8 +80,9 @@ namespace hpp {
     class HPP_STATISTICS_DLLAPI Statistics
     {
       public:
-        typedef typename std::set <T>::iterator iterator;
-        typedef typename std::set <T>::const_iterator const_iterator;
+        typedef typename std::list < T > Container;
+        typedef typename Container::iterator iterator;
+        typedef typename Container::const_iterator const_iterator;
 
         /// Return the number of occurence of a Bin.
         /// \param bin a Bin for which only the value is useful.
@@ -111,7 +113,7 @@ namespace hpp {
         /// Increment a Bin
         /// \note bin is inserted in the set of bins if it was not
         /// already in the set.
-        virtual void increment (T& bin);
+        virtual T& increment (const T& bin);
 
         /// Return an iterator pointing at the beginning of
         /// the set of bins.
@@ -128,7 +130,7 @@ namespace hpp {
         }
 
       private:
-        std::set < T > bins_;
+        Container bins_;
 
         unsigned int counts_;
     };
@@ -143,24 +145,27 @@ namespace hpp {
 namespace hpp {
   namespace statistics {
     template < typename T >
-      void Statistics <T>::increment (T& b)
+      T& Statistics <T>::increment (const T& b)
     {
-      b++;
-      std::pair< iterator, bool > it = bins_.insert (b);
-      if (!it.second) {
-        // The bin exists already. We must copy and reinsert it.
-        b = *(it.first);
-        b++;
-        bins_.erase (it.first);
-        bins_.insert (b);
-      }
       counts_++;
+      iterator it = bins_.begin ();
+      for (; it != bins_.end (); it++) {
+        if (! (*it < b)) {
+          if (! (*it == b))
+            it = bins_.insert (it, b);
+          (*it)++;
+          return *it;
+        }
+      }
+      it = bins_.insert (it, b);
+      (*it)++;
+      return *it;
     }
 
     template < typename T >
       size_t Statistics <T>::freq (const T& b) const
     {
-      typename std::set< T >::iterator it = bins_.find (b);
+      const_iterator it = std::find (bins_.begin (), bins_.end (), b);
       if (it == bins_.end ()) {
         return 0;
       }
@@ -170,7 +175,7 @@ namespace hpp {
     template < typename T >
       Proba_t Statistics <T>::relativeFreq (const T& b) const
     {
-      typename std::set< T >::iterator it = bins_.find (b);
+      const_iterator it = std::find (bins_.begin (), bins_.end (), b);
       if (it == bins_.end ()) {
         return 0;
       }
