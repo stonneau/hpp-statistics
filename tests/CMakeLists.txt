@@ -40,3 +40,4 @@ ENDMACRO(ADD_TESTCASE)
 
 ADD_TESTCASE (test-successstatistics FALSE)
 ADD_TESTCASE (test-distribution FALSE)
+ADD_TESTCASE (test-statistics FALSE)
