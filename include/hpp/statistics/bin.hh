@@ -113,7 +113,7 @@ namespace hpp {
         /// Increment a Bin
         /// \note bin is inserted in the set of bins if it was not
         /// already in the set.
-        virtual T& increment (const T& bin);
+        virtual T& increment (const T& bin) __attribute__ ((deprecated));
 
         iterator find (const T& bin);
 
