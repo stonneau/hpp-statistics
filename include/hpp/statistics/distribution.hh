@@ -20,6 +20,7 @@
 # include <vector>
 # include <assert.h>
 # include <stdlib.h>
+# include <climits>
 
 # include "hpp/statistics/fwd.hh"
 
@@ -65,6 +66,8 @@ namespace hpp {
             if (itv == values_.end ()) {
               values_.push_back (ProbaTPair(w,v));
               cumulative_weights_.push_back (c + w);
+              if (cumulative_weights_.back () >= INT_MAX / 2)
+                shrink ();
               return;
             }
             itv->first = w;
@@ -73,6 +76,20 @@ namespace hpp {
               *itcumul = c;
               itv++; itcumul++;
             }
+            if (cumulative_weights_.back () >= INT_MAX / 2)
+              shrink ();
+          }
+
+          /// Get the weight of a value
+          /// Return 0 if value was not found.
+          Weight_t get (const Value_t& v) const {
+            const_iterator itv = values_.begin ();
+            while (itv != values_.end()) {
+              if (itv->second == v)
+                return itv->first;
+              itv++;
+            }
+            return 0;
           }
 
           /// Return the probabilities.
@@ -114,6 +131,21 @@ namespace hpp {
                 return m;
             }
             return h;
+          }
+
+          /// Diminish the weights while keeping their ratio.
+          void shrink () {
+            iterator itv = values_.begin ();
+            WeightsIterator itcumul = cumulative_weights_.begin();
+            Weight_t total = 0;
+            while (itv != values_.end()) {
+              if (itv->first > 1) {
+                itv->first = itv->first >> 1;
+              }
+              total += itv->first;
+              *itcumul = total;
+              itv++; itcumul++;
+            }
           }
 
           std::vector < ProbaTPair > values_;
