@@ -92,6 +92,11 @@ namespace hpp {
             return 0;
           }
 
+          /// Return the number of value.
+          size_t size () const {
+            return values_.size ();
+          }
+
           /// Return the probabilities.
           std::vector < Proba_t > probabilities () const {
             std::vector < Proba_t > proba (values_.size());
