@@ -35,7 +35,7 @@ class TestBin : public Bin {
     {
       os << val << " has :";
       for (std::list <double>::const_iterator it = l.begin ();
-          it != l.end (); it++)
+          it != l.end (); ++it)
         os << "   " << *it << std::endl;
       return os << std::endl;
     }
@@ -64,16 +64,22 @@ int main ()
 
   TestStatistics t;
   double *check = new double [100];
+  int status = EXIT_SUCCESS;
   for (int i = 0; i < 100; i++) {
     check[i] = ((double)(rand())/(double)rand());
     t.add (i, check[i]);
   }
   for (int i = 0; i < 100; i++) {
     TestStatistics::const_iterator it = t.find (i);
-    if (it == t.end ())
-      return EXIT_FAILURE;
-    if (it->l.size () != 1 && check[i] != it->l.front())
-      return EXIT_FAILURE;
+    if (it == t.end ()) {
+      status = EXIT_FAILURE;
+      break;
+    }
+    if (it->l.size () != 1 && check[i] != it->l.front()) {
+      status = EXIT_FAILURE;
+      break;
+    }
   }
-  return EXIT_SUCCESS;
+  delete[] check;
+  return status;
 }

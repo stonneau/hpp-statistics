@@ -46,7 +46,7 @@ int main ()
 
   for (size_t i = 0; i < p.size (); i++)
     if (p[i] - (double)(weight[i] / (double)total_weight) > DBL_EPSILON
-        || p[i] - (double)(weight[i] / (double)total_weight) > DBL_EPSILON) {
+        || - p[i] + (double)(weight[i] / (double)total_weight) > DBL_EPSILON) {
       std::cout << "p[" << i << "] = " << p[i] << std::endl
         << "weight[" << i << "] = " << weight[i] << std::endl
         << "Total weight = " << total_weight << std::endl
