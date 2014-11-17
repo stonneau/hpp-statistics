@@ -99,6 +99,7 @@ namespace hpp {
 
           /// Return the probabilities.
           std::vector < Proba_t > probabilities () const {
+            if (values_.empty ()) return std::vector < Proba_t > (0);
             std::vector < Proba_t > proba (values_.size());
             Proba_t total = cumulative_weights_.back();
             for (size_t i = 0; i < values_.size (); i++)
