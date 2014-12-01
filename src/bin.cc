@@ -20,7 +20,7 @@ namespace hpp {
   namespace statistics {
     std::ostream& Bin::print (std::ostream& os) const
     {
-      return printValue (os) << " seen " << freq() << " time(s).";
+      return printValue (os << freq () << " - ");
     }
 
     std::ostream& operator<< (std::ostream& os, const hpp::statistics::Bin& b)
