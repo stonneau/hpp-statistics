@@ -107,6 +107,12 @@ namespace hpp {
             return proba;
           }
 
+          /// Return the total weight.
+          Weight_t totalWeight () const {
+            if (cumulative_weights_.empty ()) return 0;
+            return cumulative_weights_.back ();
+          }
+
           /// \name Iterators
           /// Iterate on the values.
           /// \{
