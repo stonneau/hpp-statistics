@@ -3,7 +3,7 @@
 This package is part of the [HPP] software and provides a few tools for basic statistics.
 
 ### Version
-0.3
+0.3.1
 
 ### Dependencies
 
