@@ -20,13 +20,47 @@
 
 #include "hpp/statistics/distribution.hh"
 
-int main ()
+int test1 ()
 {
-  /* initialize random seed: */
-  srand (time(NULL));
+  using namespace hpp::statistics;
+  typedef int Value;
+  typedef DiscreteDistribution <Value> Distrib;
+  Distrib dd;
+  const int nbValues = 3;
+  const Value values[] = {1, 2, 3};
+  const Distrib::Weight_t weight[] =
+    {0, 1, 1};
+  Distrib::Weight_t total_weight = 0;
+  for (int i = 0; i < nbValues; i++) {
+    dd.insert (values[i], weight[i]);
+    total_weight += weight[i];
+  }
 
-  std::cout.precision(15);
+  std::vector < Proba_t > p = dd.probabilities ();
 
+  for (size_t i = 0; i < p.size (); i++)
+    if (p[i] - (double)(weight[i] / (double)total_weight) > DBL_EPSILON
+        || - p[i] + (double)(weight[i] / (double)total_weight) > DBL_EPSILON) {
+      std::cout << "p[" << i << "] = " << p[i] << std::endl
+        << "weight[" << i << "] = " << weight[i] << std::endl
+        << "Total weight = " << total_weight << std::endl
+        << "Difference = " << p[i] - (double)(weight[i] / (double)total_weight) << std::endl;
+      return EXIT_FAILURE;
+    }
+
+  if (dd ((Distrib::Weight_t)  0) != values[1]) {
+    std::cout << "dichotomy (" << 0 << ") returns " << dd ((Distrib::Weight_t)  0) << std::endl;
+    return EXIT_FAILURE;
+  }
+  if (dd ((Distrib::Weight_t) 1) != values[2]) {
+    std::cout << "dichotomy (" << 1 << ") returns " << dd ((Distrib::Weight_t)  1) << std::endl;
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
+}
+
+int test2 ()
+{
   using namespace hpp::statistics;
   typedef int Value;
   typedef DiscreteDistribution <Value> Distrib;
@@ -71,4 +105,15 @@ int main ()
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;
+}
+
+int main () {
+  /* initialize random seed: */
+  srand (time(NULL));
+
+  std::cout.precision(15);
+
+  int exit_status = test1 ();
+  // exit_status |= test2 ();
+  return exit_status;
 }
