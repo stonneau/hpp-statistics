@@ -135,7 +135,7 @@ namespace hpp {
             size_t l = 0, h = values_.size () - 1, m;
             while (l < h - 1) {
               m = (l + h) / 2;
-              if (cumulative_weights_[m] < r)
+              if (cumulative_weights_[m] <= r)
                 l = m;
               else if (cumulative_weights_[m] > r)
                 h = m;
