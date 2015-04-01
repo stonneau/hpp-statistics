@@ -109,7 +109,7 @@ int test2 ()
 
 int main () {
   /* initialize random seed: */
-  srand (time(NULL));
+  srand (static_cast<unsigned int> (time(NULL)));
 
   std::cout.precision(15);
 

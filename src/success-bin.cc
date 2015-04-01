@@ -77,17 +77,17 @@ namespace hpp {
       insert (SuccessBin (true));
     }
 
-    unsigned int SuccessStatistics::nbSuccess () const
+    std::size_t SuccessStatistics::nbSuccess() const
     {
       return freq (SuccessBin(true));
     }
 
-    unsigned int SuccessStatistics::nbFailure () const
+    std::size_t SuccessStatistics::nbFailure() const
     {
       return numberOfObservations() - nbSuccess();
     }
 
-    unsigned int SuccessStatistics::nbFailure (const SuccessBin::Reason& r) const
+    std::size_t SuccessStatistics::nbFailure(const SuccessBin::Reason& r) const
     {
       return freq (SuccessBin (false, r));
     }

@@ -112,13 +112,13 @@ namespace hpp {
         void addFailure (const SuccessBin::Reason& r = SuccessBin::REASON_UNKNOWN);
 
         /// Count the number of success.
-        unsigned int nbSuccess () const;
+        std::size_t nbSuccess () const;
 
         /// Count the number of failure, in total.
-        unsigned int nbFailure () const;
+        std::size_t nbFailure () const;
 
         /// Count the number of a particular failure.
-        unsigned int nbFailure (const SuccessBin::Reason& r) const;
+        std::size_t nbFailure (const SuccessBin::Reason& r) const;
     };
   } // namespace statistics
 } // namespace hpp

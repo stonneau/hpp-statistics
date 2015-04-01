@@ -27,7 +27,7 @@ using namespace hpp;
 int main ()
 {
   /* initialize random seed: */
-  srand (time(NULL));
+    srand (static_cast<unsigned int> (time(NULL)));
 
   using namespace hpp::statistics;
   SuccessStatistics ss;
